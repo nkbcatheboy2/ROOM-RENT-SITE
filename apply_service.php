@@ -1,5 +1,5 @@
 <?php
-// apply_service.php
+
 include 'config/db.php';
 
 $success_msg = "";
@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $amount = $_POST['required_amount'];
     $details = $_POST['details'];
 
-    // डेटाबेस में सेव करने का लॉजिक यहाँ आएगा
+    ा
     if (!empty($name) && !empty($phone)) {
         $success_msg = "आपका आवेदन सफलतापूर्वक जमा हो गया है! हमारी टीम जल्द ही आपसे संपर्क करेगी।";
     }
