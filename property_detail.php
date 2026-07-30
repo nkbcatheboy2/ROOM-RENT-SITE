@@ -1,5 +1,4 @@
 <?php
-// property_detail.php
 include 'config/db.php';
 ?>
 <!DOCTYPE html>
