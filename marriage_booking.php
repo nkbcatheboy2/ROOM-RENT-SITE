@@ -1,19 +1,27 @@
 <?php
-include 'config/db.php';
+require_once 'config/db.php';
 $msg = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = trim($_POST['name']);
-    $phone = trim($_POST['phone']);
-    $event_date = $_POST['event_date'];
-    $venue_type = $_POST['venue_type'];
-    $message = trim($_POST['message']);
+    $name = trim($_POST['name'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $event_date = $_POST['event_date'] ?? '';
+    $venue_type = $_POST['venue_type'] ?? '';
+    $message = trim($_POST['message'] ?? '');
 
-    $sql = "INSERT INTO marriage_bookings (name, phone, event_date, venue_type, message) VALUES ('$name', '$phone', '$event_date', '$venue_type', '$message')";
-    if($conn->query($sql) === TRUE) {
-        $msg = "Marriage Lawn booking request submitted successfully!";
+    if (!empty($name) && !empty($phone) && !empty($event_date) && !empty($venue_type)) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO marriage_bookings (name, phone, event_date, venue_type, message) VALUES (?, ?, ?, ?, ?)");
+            if ($stmt->execute([$name, $phone, $event_date, $venue_type, $message])) {
+                $msg = "Marriage Lawn booking request submitted successfully!";
+            } else {
+                $msg = "Error: Failed to submit booking request.";
+            }
+        } catch (PDOException $e) {
+            $msg = "Database Error: " . $e->getMessage();
+        }
     } else {
-        $msg = "Error: " . $conn->error;
+        $msg = "Please fill in all required fields.";
     }
 }
 ?>
@@ -44,7 +52,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <p class="text-muted small">Book verified wedding lawns and banquet halls for your events.</p>
                     </div>
 
-                    <?php if (!empty($msg)): ?><div class="alert alert-success"><?php echo $msg; ?></div><?php endif; ?>
+                    <?php if (!empty($msg)): ?>
+                        <div class="alert alert-info"><?php echo htmlspecialchars($msg); ?></div>
+                    <?php endif; ?>
 
                     <form action="" method="POST">
                         <div class="row g-3">
